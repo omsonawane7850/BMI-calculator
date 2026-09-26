@@ -1,70 +1,157 @@
 import { useState } from "react";
-import "./App.css";
 
 function App() {
+  const [unit, setUnit] = useState("metric");
+
   const [weight, setWeight] = useState("");
-  const [height, setHight] = useState("");
+  const [height, setHeight] = useState("");
+
   const [bmi, setBmi] = useState("");
-  const [messege, setMessege] = useState("");
+  const [message, setMessage] = useState("");
+  const [range, setRange] = useState("");
 
-  let calBmi = (event) => {
+  const calculateBMI = (event) => {
     event.preventDefault();
-    if (weight === "" || height === "") {
-      alert("Enter a Valid Weight and Height");
-    } else {
-      let bmi = (weight / (height * height)) * 703;
-      setBmi(bmi.toFixed(1));
 
-      // BMI category
-      if (bmi < 18.5) {
-        setMessege("You are Underweight");
-      } else if (bmi < 25) {
-        setMessege("You have Normal weight");
-      } else if (bmi < 30) {
-        setMessege("You are Overweight");
-      } else {
-        setMessege("You are Obese");
-      }
+    if (weight === "" || height === "") {
+      alert("Please enter weight and height");
+      return;
     }
-    //reload
+
+    if (weight <= 0 || height <= 0) {
+      alert("Weight and height must be greater than 0");
+      return;
+    }
+
+    let calculatedBMI;
+
+    if (unit === "metric") {
+      // Weight = kg
+      // Height = cm
+
+      const heightInMeter = height / 100;
+
+      calculatedBMI = weight / (heightInMeter * heightInMeter);
+    } else {
+      // Weight = lbs
+      // Height = inches
+
+      calculatedBMI = (weight / (height * height)) * 703;
+    }
+
+    const finalBMI = Number(calculatedBMI.toFixed(1));
+
+    setBmi(finalBMI);
+
+    if (finalBMI < 18.5) {
+      setMessage("Underweight");
+      setRange("Below 18.5");
+    } else if (finalBMI < 25) {
+      setMessage("Normal weight");
+      setRange("18.5 - 24.9");
+    } else if (finalBMI < 30) {
+      setMessage("Overweight");
+      setRange("25 - 29.9");
+    } else {
+      setMessage("Obese");
+      setRange("30+");
+    }
   };
-  let reload = () => {
-    window.location.reload();
+
+  const clearForm = () => {
+    setWeight("");
+    setHeight("");
+    setBmi("");
+    setMessage("");
+    setRange("");
+  };
+
+  const changeUnit = (newUnit) => {
+    setUnit(newUnit);
+    clearForm();
   };
 
   return (
     <div className="container">
-      <h2>BMI calculator</h2>
+      <div className="calculator">
+        <h1>BMI Calculator</h1>
 
-      <form onSubmit={calBmi}>
-        {" "}
-        <div>
-          <label>weight (lbs)</label>
-          <input
-            type="text"
-            placeholder="Enter your weight"
-            value={weight}
-            onChange={(event) => setWeight(event.target.value)}
-          />
-          <label>height (in)</label>
-          <input
-            type="text"
-            placeholder="Enter your height"
-            value={height}
-            onChange={(event) => setHight(event.target.value)}
-          />
-        </div>
-        <div>
-          <button className="btn">Submit</button>
-          <button className="btn btn-outline" type="button" onClick={reload}>
-            reload
+        <p className="subtitle">Calculate your Body Mass Index</p>
+
+        {/* Unit Switch */}
+
+        <div className="unit-switch">
+          <button
+            className={unit === "metric" ? "active" : ""}
+            onClick={() => changeUnit("metric")}
+          >
+            Metric
+          </button>
+
+          <button
+            className={unit === "us" ? "active" : ""}
+            onClick={() => changeUnit("us")}
+          >
+            US Units
           </button>
         </div>
-        <div className="messege">
-          <h3>Your BMI is: {bmi}</h3>
-          <p>{messege}</p>
-        </div>
-      </form>
+
+        {/* Form */}
+
+        <form onSubmit={calculateBMI}>
+          <div className="input-group">
+            <label>Weight ({unit === "metric" ? "kg" : "lbs"})</label>
+
+            <input
+              type="number"
+              min="0"
+              step="any"
+              placeholder={`Enter weight in ${
+                unit === "metric" ? "kg" : "lbs"
+              }`}
+              value={weight}
+              onChange={(event) => setWeight(event.target.value)}
+            />
+          </div>
+
+          <div className="input-group">
+            <label>Height ({unit === "metric" ? "cm" : "in"})</label>
+
+            <input
+              type="number"
+              min="0"
+              step="any"
+              placeholder={`Enter height in ${unit === "metric" ? "cm" : "in"}`}
+              value={height}
+              onChange={(event) => setHeight(event.target.value)}
+            />
+          </div>
+
+          <div className="buttons">
+            <button className="calculate-btn" type="submit">
+              Calculate BMI
+            </button>
+
+            <button className="clear-btn" type="button" onClick={clearForm}>
+              Clear
+            </button>
+          </div>
+        </form>
+
+        {/* Result */}
+
+        {bmi && (
+          <div className="result">
+            <p>Your BMI is</p>
+
+            <h2>{bmi}</h2>
+
+            <h3>{message}</h3>
+
+            <p>BMI Range: {range}</p>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
