@@ -1,10 +1,12 @@
 # BMI Calculator
 
-A simple BMI Calculator built with React.js that supports both Metric and US units.
+A simple BMI Calculator built with React.js that supports Metric and US units, BMI history, and localStorage.
 
 ## Overview
 
-This project allows users to calculate their Body Mass Index (BMI) by entering their weight and height. It supports Metric and US unit systems and displays the BMI category along with its healthy range.
+This project allows users to calculate their Body Mass Index (BMI) by entering their weight and height. It supports Metric and US unit systems and displays the BMI category along with its BMI range.
+
+The project also stores BMI calculation history in localStorage, allowing users to view, delete, or clear previous results.
 
 ## Features
 
@@ -15,7 +17,12 @@ This project allows users to calculate their Body Mass Index (BMI) by entering t
 - BMI range display
 - Input validation
 - Clear form functionality
+- BMI calculation history
+- Save history using localStorage
+- Delete individual history records
+- Clear complete history
 - Responsive design
+- Component-based structure
 
 ## Tech Stack
 
@@ -23,6 +30,14 @@ This project allows users to calculate their Body Mass Index (BMI) by entering t
 - JavaScript
 - CSS
 - Vite
+- LocalStorage
+
+## Components
+
+- `UnitSwitch` - Handles Metric and US unit selection
+- `BmiForm` - Handles weight, height, and form inputs
+- `BmiResult` - Displays the calculated BMI result
+- `BmiHistory` - Displays and manages BMI calculation history
 
 ## BMI Categories
 
